@@ -99,7 +99,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "matrizB_2.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = "matrizB.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
 
 !    Asignar memoria a la matriz de flujos y a la matriz de salida
     ALLOCATE (mat_flow(nodes,hours), mat_out(nodes,hours), STAT=allocate_status)

@@ -2,5 +2,6 @@
 *.csv
 *.dat
 *.o
+*.out
 emisiones_etrome
 flujos_desconocidos
