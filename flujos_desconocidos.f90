@@ -2,6 +2,9 @@ PROGRAM flujos_desconocidos
 IMPLICIT NONE
 !    ProOsito:
 !        Lee la matriz de entradas y salidas y la matriz de flujos y las multiplica
+!    ParAmetros:
+!        Directorio de los archivos de entrada
+!        No puede contener caracteres especiales
 !    Entradas:
 !        Matriz de entradas y salidas en texto separado por espacios
 !        Matriz de flujos en texto separado por espacios
@@ -41,14 +44,31 @@ IMPLICIT NONE
     INTEGER :: sgesv_status                              !Estado de la soluciOn con sgesv 
     
 !    CHARACTER(LEN=256) :: filename                       !Nombre de los archivos de entrada
+    CHARACTER(LEN=256) :: path                           !Directorio de los archivos de entrada
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    DeclaraciOn de contadores
-    INTEGER :: i, j                                      !Integer counters
+    INTEGER :: arg_num, i, j                                      !Integer counters
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    Rutinas externas
     EXTERNAL SGESV
+
+!    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
+!    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
+!    Captura de argumentos de entrada
+    arg_num = COMMAND_ARGUMENT_COUNT()
+    IF (arg_num == 0) THEN
+        WRITE(*,*) "Es necesario proporcionar un directorio de los archivos de entrada"
+        STOP
+    ELSEIF (arg_num /= 1) THEN
+        WRITE(*,*) "NUmero incorrecto de argumentos"
+        STOP
+    ELSE
+!        Capturar el tipo de argumento
+        CALL GET_COMMAND_ARGUMENT(1,path)
+        WRITE(*,*) "Directorio de los archivos de entrada: ", path
+    END IF
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    Abrir el archivo de la matriz de entradas y salidas    
@@ -58,7 +78,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "matrizA.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"matrizA.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
     READ (7,*,IOSTAT=readstatus) nodes
     IF (readstatus > 0) THEN
@@ -99,7 +119,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "matrizB.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"matrizB.dat", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
 
 !    Asignar memoria a la matriz de flujos y a la matriz de salida
     ALLOCATE (mat_flow(nodes,hours), mat_out(nodes,hours), STAT=allocate_status)
@@ -158,7 +178,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED')
-    OPEN (UNIT = 7, FILE = "matrizX.dat", FORM = 'FORMATTED')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"matrizX.dat", FORM = 'FORMATTED')
     DO i = 1, nodes
 !        WRITE (*,*) 'Escribiendo el nodo ', i
         WRITE (7,*) (INT(ABS(mat_out(i,j))), j = 1, hours)
