@@ -73,21 +73,21 @@ IMPLICIT NONE
     INTEGER :: arg_num, i, j, k, l, m                             !Integer counters
     INTEGER :: cell_id
 
-!	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-!	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-!	Captura de argumentos de entrada
-	arg_num = COMMAND_ARGUMENT_COUNT()
-	IF (arg_num == 0) THEN
-		WRITE(*,*) "Es necesario proporcionar un directorio de los archivos de entrada"
-		STOP
-	ELSEIF (arg_num /= 1) THEN
-		WRITE(*,*) "NUmero incorrecto de argumentos"
-		STOP
-	ELSE
-!		Capturar el tipo de argumento
-		CALL GET_COMMAND_ARGUMENT(1,path)
-		WRITE(*,*) "Directorio de los archivos de entrada: ", path
-	END IF
+!    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
+!    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
+!    Captura de argumentos de entrada
+    arg_num = COMMAND_ARGUMENT_COUNT()
+    IF (arg_num == 0) THEN
+        WRITE(*,*) "Es necesario proporcionar un directorio de los archivos de entrada"
+        STOP
+    ELSEIF (arg_num /= 1) THEN
+        WRITE(*,*) "NUmero incorrecto de argumentos"
+        STOP
+    ELSE
+!        Capturar el tipo de argumento
+        CALL GET_COMMAND_ARGUMENT(1,path)
+        WRITE(*,*) "Directorio de los archivos de entrada: ", path
+    END IF
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    Abrir el archivo de la matriz de flujos, contiene el vector de longitudes de vIa
@@ -107,8 +107,8 @@ IMPLICIT NONE
         CLOSE (7)
         STOP
     END IF
-	
-!	 Lectura del nUmero de tramos
+    
+!     Lectura del nUmero de tramos
     READ (7,*,IOSTAT=readstatus) num_roads, idum
     
     IF (readstatus > 0) THEN
@@ -166,8 +166,8 @@ IMPLICIT NONE
         CLOSE (7)
         STOP
     END IF
-	
-!	 Lectura del nUmero de tipos de vehiculos y especies
+    
+!     Lectura del nUmero de tipos de vehiculos y especies
     READ (7,*,IOSTAT=readstatus) num_veh_ids, species
 !    Restar las dos primeras columnas para obtener el nUmero real de especies
     species = species - 2
@@ -228,8 +228,8 @@ IMPLICIT NONE
         CLOSE (7)
         STOP
     END IF
-	
-!	 Lectura del nUmero de combinaciones celda-vIa
+    
+!     Lectura del nUmero de combinaciones celda-vIa
     READ (7,*,IOSTAT=readstatus) cell_road_pairs, idum, num_cells
     IF (readstatus > 0) THEN
         !    Error de lectura
@@ -253,12 +253,12 @@ IMPLICIT NONE
 !                                          celda                    vIa                      porcentaje
         READ (7,*,IOSTAT=readstatus) idum, mat_cell_road_comb(i,1), mat_cell_road_comb(i,2), vec_cell_road_length(i)
         IF (readstatus > 0) THEN
-			!    Error de lectura
+            !    Error de lectura
             WRITE (*,*) 'No es posible leer el nUmero combinaciones o celdas'
             CLOSE (7)
             STOP
         END IF
-!		CAlculo de la longitud de tramo
+!        CAlculo de la longitud de tramo
 !                                 convertir a fracciOn             multiplicar por la longitud de vIa
         vec_cell_road_length(i) = vec_cell_road_length(i) / 100. * vec_road_length(mat_cell_road_comb(i,2))
     END DO
