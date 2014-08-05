@@ -61,7 +61,7 @@ IMPLICIT NONE
     INTEGER :: readstatus                                !Estado de la instrucciOn de lectura
     INTEGER :: allocate_status                           !Estado de la instrucciOn de asignaciOn de memoria
     
-!    CHARACTER(LEN=256) :: filename                      !Nombre de los archivos de entrada
+    CHARACTER(LEN=256) :: path                           !Directorio de los archivos de entrada
     CHARACTER(LEN=20) :: str_fout                        !Nombre del archivo de salida
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
@@ -70,8 +70,24 @@ IMPLICIT NONE
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    DeclaraciOn de contadores
-    INTEGER :: i, j, k, l, m                             !Integer counters
+    INTEGER :: arg_num, i, j, k, l, m                             !Integer counters
     INTEGER :: cell_id
+
+!	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+!	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+!	Captura de argumentos de entrada
+	arg_num = COMMAND_ARGUMENT_COUNT()
+	IF (arg_num == 0) THEN
+		WRITE(*,*) "Es necesario proporcionar un directorio de los archivos de entrada"
+		STOP
+	ELSEIF (arg_num /= 1) THEN
+		WRITE(*,*) "NUmero incorrecto de argumentos"
+		STOP
+	ELSE
+!		Capturar el tipo de argumento
+		CALL GET_COMMAND_ARGUMENT(1,path)
+		WRITE(*,*) "Directorio de los archivos de entrada: ", path
+	END IF
 
 !    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -    -
 !    Abrir el archivo de la matriz de flujos, contiene el vector de longitudes de vIa
@@ -81,7 +97,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "flujos.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = path//"flujos.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -140,7 +156,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "factores_emision.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = path//"factores_emision.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -202,7 +218,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = "codigo_etrome.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = path//"codigo_etrome.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -296,7 +312,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A12,I2.2,A4)") "etrome_vIas_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
     END DO
 
 !    Asignar memoria a la matriz de emisiones por vIa para una hora
@@ -359,7 +375,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A11,I2.2,A4)") "etrome_veh_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
     END DO
 
     WRITE (*,*) "Escribiendo los archivos de emisiones por tipo de vehIculo"
@@ -437,7 +453,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A14,I2.2,A4)") "etrome_celdas_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
     END DO
     
 !    Asignar memoria a la matriz de emisiones por celda para una hora
