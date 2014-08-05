@@ -2,6 +2,9 @@ PROGRAM emisiones_etrome
 IMPLICIT NONE
 !    ProOsito:
 !        Calcula las emisiones vehiculares usando la informaciOn de tramos, celdas, tipo de vehIculo y factores de emisiOn
+!    ParAmetros:
+!        Directorio de los archivos de entrada
+!        No puede contener caracteres especiales
 !    Entradas:
 !        Matriz de flujos conocidos y calculados
 !    Salida:
@@ -97,7 +100,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = path//"flujos.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"flujos.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -156,7 +159,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = path//"factores_emision.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"factores_emision.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -218,7 +221,7 @@ IMPLICIT NONE
 !    WRITE (*,*) filename
  
 !    OPEN (UNIT = 7, FILE = filename, FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
-    OPEN (UNIT = 7, FILE = path//"codigo_etrome.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
+    OPEN (UNIT = 7, FILE = TRIM(ADJUSTL(path))//"codigo_etrome.csv", FORM = 'FORMATTED', STATUS = 'OLD', ACTION = 'READ')
     
 !    Saltar el encabezado del archivo
     READ (7,*,IOSTAT=readstatus)
@@ -312,7 +315,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A12,I2.2,A4)") "etrome_vIas_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = TRIM(ADJUSTL(path))//str_fout, FORM = 'FORMATTED')
     END DO
 
 !    Asignar memoria a la matriz de emisiones por vIa para una hora
@@ -375,7 +378,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A11,I2.2,A4)") "etrome_veh_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = TRIM(ADJUSTL(path))//str_fout, FORM = 'FORMATTED')
     END DO
 
     WRITE (*,*) "Escribiendo los archivos de emisiones por tipo de vehIculo"
@@ -453,7 +456,7 @@ IMPLICIT NONE
     DO i = 1, hours
 !        GeneraciOn del nombre de archivo
         WRITE(str_fout,"(A14,I2.2,A4)") "etrome_celdas_", i, ".csv"
-        OPEN (UNIT = i + 6, FILE = path//str_fout, FORM = 'FORMATTED')
+        OPEN (UNIT = i + 6, FILE = TRIM(ADJUSTL(path))//str_fout, FORM = 'FORMATTED')
     END DO
     
 !    Asignar memoria a la matriz de emisiones por celda para una hora
